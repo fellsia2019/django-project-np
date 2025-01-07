@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Project, Initiative, Article
+from django.contrib.auth.models import User
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -60,3 +61,9 @@ class ArticleSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_time_update(obj):
         return int(obj.time_update.timestamp())
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']  # Возвращаем все поля

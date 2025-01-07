@@ -7,11 +7,10 @@
     <list default="true" id="e768ab3a-63e8-4dad-8ac1-073033480b35" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/images/1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/images/1.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/images/4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/images/4.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/djangoNp/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangoNp/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/djangoNp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangoNp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +101,7 @@
       <workItem from="1736156820980" duration="20654000" />
       <workItem from="1736233860159" duration="1529000" />
       <workItem from="1736235640772" duration="183000" />
-      <workItem from="1736236093632" duration="4121000" />
+      <workItem from="1736236093632" duration="10635000" />
     </task>
     <servers />
   </component>

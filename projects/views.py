@@ -1,10 +1,14 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
 from .models import Project, Initiative, Article
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
-from .serializers import  ProjectSerializer, InitiativeSerializer, ArticleSerializer
+from .serializers import ProjectSerializer, InitiativeSerializer, ArticleSerializer, UserSerializer
 
 
 class CustomPagination(PageNumberPagination):
@@ -59,3 +63,13 @@ def create_views(model_class, serializer_model_class):
 ProjectAPIList, ProjectAPIUpdate, ProjectAPIDestroy = create_views(Project, ProjectSerializer)
 InitiativeAPIList, InitiativeAPIUpdate, InitiativeAPIDestroy = create_views(Initiative, InitiativeSerializer)
 ArticleAPIList, ArticleAPIUpdate, ArticleAPIDestroy = create_views(Article, ArticleSerializer)
+
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
