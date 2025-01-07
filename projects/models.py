@@ -30,6 +30,9 @@ class Project(models.Model):
         if self.image:
             self.compress_image()
             self.create_webp_image()
+        else:
+            # Если изображение очищено, также очищаем image_webp
+            self.image_webp = None
 
         super().save(*args, **kwargs)
 
@@ -51,7 +54,6 @@ class Project(models.Model):
 
         # Сохраняем путь к новому файлу в поле image_webp
         self.image = image_path.replace('media/', '')  # Обновляем поле image
-        super().save(update_fields=['image'])  # Обновляем только поле image
 
     def create_webp_image(self):
         # Определяем путь для WebP изображения
@@ -67,11 +69,10 @@ class Project(models.Model):
         image = PilImage.open(original_image_path)
 
         # Сохраняем изображение в формате WebP
-        image.save(webp_image_path, format='webp', quality=90)
+        image.save(webp_image_path, format='webp', quality=80)
 
         # Сохраняем путь к новому файлу в поле image_webp
         self.image_webp = webp_image_path.replace('media/', '')  # Обновляем поле image_webp
-        super().save(update_fields=['image_webp'])  # Обновляем только поле image_webp
 
 
 class Initiative(models.Model):

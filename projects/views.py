@@ -38,7 +38,7 @@ class CustomPagination(PageNumberPagination):
 def create_views(model_class, serializer_model_class):
 
     class ListCreateView(generics.ListCreateAPIView):
-        queryset = Project.objects.filter(is_published=True)
+        queryset = Project.objects.filter(is_published=True).order_by('id')
         serializer_class = serializer_model_class
         permission_classes = (IsAuthenticatedOrReadOnly,)
         pagination_class = CustomPagination
