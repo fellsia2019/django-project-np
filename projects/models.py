@@ -8,25 +8,9 @@ from PIL import Image as PilImage
 import os
 
 
-class Project(models.Model):
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
-    time_create = models.DateTimeField(auto_now_add=True)
-    time_update = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(blank=True, null=True)
-    image_webp = models.ImageField(blank=True, null=True)
+class ImageOptimizationMixin:
 
-    class Meta:
-        verbose_name = 'Проект'
-        verbose_name_plural = 'Проекты'
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        # Если изображение загружено, выполняем его сжатие
+    def optimize_image(self, *args, **kwargs):
         if self.image:
             self.compress_image()
             self.create_webp_image()
@@ -34,7 +18,7 @@ class Project(models.Model):
             # Если изображение очищено, также очищаем image_webp
             self.image_webp = None
 
-        super().save(*args, **kwargs)
+        # super().save(*args, **kwargs)
 
     def compress_image(self):
         # Открываем оптимизированное оригинальное изображение
@@ -75,7 +59,30 @@ class Project(models.Model):
         self.image_webp = webp_image_path.replace('media/', '')  # Обновляем поле image_webp
 
 
-class Initiative(models.Model):
+class Project(models.Model, ImageOptimizationMixin):
+    title = models.CharField(max_length=255)
+    content = models.TextField(blank=True)
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(blank=True, null=True)
+    image_webp = models.ImageField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Проект'
+        verbose_name_plural = 'Проекты'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        # оптимизация изображения, метод из ImageOptimizationMixin
+        self.optimize_image(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+
+class Initiative(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
@@ -83,6 +90,7 @@ class Initiative(models.Model):
     is_published = models.BooleanField(default=True)
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
+    image_webp = models.ImageField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Инициатива'
@@ -90,6 +98,11 @@ class Initiative(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # оптимизация изображения, метод из ImageOptimizationMixin
+        self.optimize_image(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class ArticleCategory(models.Model):
@@ -103,7 +116,7 @@ class ArticleCategory(models.Model):
         return self.title
 
 
-class Article(models.Model):
+class Article(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
@@ -112,6 +125,12 @@ class Article(models.Model):
     initiative_id = models.ForeignKey(Initiative, on_delete=models.CASCADE)
     cat_id = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
+    image_webp = models.ImageField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # оптимизация изображения, метод из ImageOptimizationMixin
+        self.optimize_image(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Статья'
