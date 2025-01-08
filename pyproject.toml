@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 79
+exclude = '''
+/(
+    \.venv
+    | env
+    | migrations
+    | .git
+    | staticfiles
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+known_third_party = ["django"]
+default_section = "THIRDPARTY"
+skip = [".venv", "env", "migrations", ".git", "staticfiles"]

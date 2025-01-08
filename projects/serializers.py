@@ -1,17 +1,20 @@
-from rest_framework import serializers
-from .models import Project, Initiative, Article
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from .models import Article, Initiative, Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    initiative_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=True, source='initiative_set')
+    initiative_ids = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=True, source="initiative_set"
+    )
     time_create = serializers.SerializerMethodField()
     time_update = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = "__all__"
 
     @staticmethod
     def get_time_create(obj):
@@ -24,13 +27,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class InitiativeSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    article_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=True, source='article_set')
+    article_ids = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=True, source="article_set"
+    )
     time_create = serializers.SerializerMethodField()
     time_update = serializers.SerializerMethodField()
 
     class Meta:
         model = Initiative
-        fields = '__all__'
+        fields = "__all__"
 
     @staticmethod
     def get_time_create(obj):
@@ -40,6 +45,7 @@ class InitiativeSerializer(serializers.ModelSerializer):
     def get_time_update(obj):
         return int(obj.time_update.timestamp())
 
+
 class ArticleSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     project_id = serializers.SerializerMethodField()
@@ -48,7 +54,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = '__all__'
+        fields = "__all__"
 
     @staticmethod
     def get_project_id(obj):
@@ -66,4 +72,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']  # Возвращаем все поля
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+        ]  # Возвращаем все поля

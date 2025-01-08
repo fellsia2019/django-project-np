@@ -1,0 +1,47 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+
+# Local settings
+*.local
+*.env
+*.env.*  # игнорируем все файлы окружения
+
+# Django stuff:
+*.log
+*.sqlite3
+#db.sqlite3 // пока оставлю
+
+# Media files
+/media
+
+# Static files
+/static
+/staticfiles
+
+# IDE Files
+.idea/
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Coverage reports
+.coverage
+.coverage.*
+*.cover
+
+# Django REST Framework specific
+.venv/
+# любые другие временные файлы, которые вам не нужны в репозитории

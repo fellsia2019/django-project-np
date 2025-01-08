@@ -1,15 +1,12 @@
-from itertools import compress
+import os
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
 from django.db import models
-
-
 from PIL import Image as PilImage
-import os
 
 
 class ImageOptimizationMixin:
-
     def optimize_image(self, *args, **kwargs):
         if self.image:
             self.compress_image()
@@ -24,27 +21,27 @@ class ImageOptimizationMixin:
         # Открываем оптимизированное оригинальное изображение
         image = PilImage.open(self.image)
         image_name = os.path.basename(self.image.path)
-        image_path = os.path.join('media/images/', image_name)
+        image_path = os.path.join("media/images/", image_name)
 
         # Создаем директорию, если она не существует
         os.makedirs(os.path.dirname(image_path), exist_ok=True)
 
         # Конвертируем изображение в RGB, если оно имеет альфа-канал
-        if image.mode == 'RGBA':
-            image = image.convert('RGB')
+        if image.mode == "RGBA":
+            image = image.convert("RGB")
 
         # Сохраняем изображение с quality=80 и оптимизацией
-        image.save(image_path, format='JPEG', quality=80, optimize=True)
+        image.save(image_path, format="JPEG", quality=80, optimize=True)
 
         # Сохраняем путь к новому файлу в поле image_webp
-        self.image = image_path.replace('media/', '')  # Обновляем поле image
+        self.image = image_path.replace("media/", "")  # Обновляем поле image
 
     def create_webp_image(self):
         # Определяем путь для WebP изображения
         image_name = os.path.basename(self.image.path)
-        webp_image_name = os.path.splitext(image_name)[0] + '.webp'
-        webp_image_path = os.path.join('media/images/', webp_image_name)
-        original_image_path = os.path.join('media/images/', image_name)
+        webp_image_name = os.path.splitext(image_name)[0] + ".webp"
+        webp_image_path = os.path.join("media/images/", webp_image_name)
+        original_image_path = os.path.join("media/images/", image_name)
 
         # Создаем директорию, если она не существует
         os.makedirs(os.path.dirname(webp_image_path), exist_ok=True)
@@ -53,15 +50,18 @@ class ImageOptimizationMixin:
         image = PilImage.open(original_image_path)
 
         # Сохраняем изображение в формате WebP
-        image.save(webp_image_path, format='webp', quality=80)
+        image.save(webp_image_path, format="webp", quality=80)
 
         # Сохраняем путь к новому файлу в поле image_webp
-        self.image_webp = webp_image_path.replace('media/', '')  # Обновляем поле image_webp
+        self.image_webp = webp_image_path.replace(
+            "media/", ""
+        )  # Обновляем поле image_webp
 
 
 class Project(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
+    detail_text = RichTextUploadingField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
@@ -70,8 +70,8 @@ class Project(models.Model, ImageOptimizationMixin):
     image_webp = models.ImageField(blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Проект'
-        verbose_name_plural = 'Проекты'
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
 
     def __str__(self):
         return self.title
@@ -93,8 +93,8 @@ class Initiative(models.Model, ImageOptimizationMixin):
     image_webp = models.ImageField(blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Инициатива'
-        verbose_name_plural = 'Инициатива'
+        verbose_name = "Инициатива"
+        verbose_name_plural = "Инициатива"
 
     def __str__(self):
         return self.title
@@ -109,8 +109,8 @@ class ArticleCategory(models.Model):
     title = models.CharField(max_length=255)
 
     class Meta:
-        verbose_name = 'Категория статьи'
-        verbose_name_plural = 'Категория статьи'
+        verbose_name = "Категория статьи"
+        verbose_name_plural = "Категория статьи"
 
     def __str__(self):
         return self.title
@@ -133,10 +133,8 @@ class Article(models.Model, ImageOptimizationMixin):
         super().save(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'Статья'
-        verbose_name_plural = 'Статья'
+        verbose_name = "Статья"
+        verbose_name_plural = "Статья"
 
     def __str__(self):
         return self.title
-
-
