@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     "projects.apps.ProjectsConfig",
     "rest_framework",
     "corsheaders",
-    "ckeditor",
-    "ckeditor_uploader",
+    "tinymce",
 ]
 
 MIDDLEWARE = [
@@ -131,6 +130,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+SITE_URL = "http://127.0.0.1:8000"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -191,5 +191,38 @@ SIMPLE_JWT = {
 }
 
 
-# https://django-ckeditor.readthedocs.io/en/latest/
-CKEDITOR_UPLOAD_PATH = "uploads/"
+# https://www.tiny.cloud/docs/tinymce/latest/
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver",
+    "height": 600,
+    # https://www.tiny.cloud/docs/tinymce/latest/plugins/
+    "plugins": (
+        "code",
+        "directionality",
+        "link",
+        "media",
+        "table",
+        "searchreplace",
+        "visualblocks",
+        "wordcount",
+        "autosave",
+        "charmap",
+        "fullscreen",
+        "help",
+        "image",
+        "anchor",
+        "autolink",
+        "insertdatetime",
+        "lists",
+        "advlist",
+        "nonbreaking",
+        "searchreplace",
+        "visualchars",
+    ),
+    "toolbar": "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | table | code",
+    "image_caption": True,
+    "images_upload_url": "/api/v1/upload/",  # URL для загрузки изображений
+    "images_upload_handler": "projects.views.upload_image",  # Обработчик загрузки изображений
+    "image_title": True,
+    "insertdatetime_element": True,
+}

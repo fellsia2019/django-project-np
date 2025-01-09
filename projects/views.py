@@ -16,6 +16,11 @@ from .serializers import (
     ProjectSerializer,
     UserSerializer,
 )
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
+from PIL import Image
+import io
 
 
 class CustomPagination(PageNumberPagination):
@@ -90,3 +95,35 @@ class CurrentUserView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+# @csrf_exempt
+# def upload_image(request):
+#     if request.method == "POST" and request.FILES.get("file"):
+#         file = request.FILES["file"]
+#
+#         # Сохранение изображения
+#         fs = FileSystemStorage()
+#         filename = fs.save(file.name, file)  # Сохранение файла в MEDIA_ROOT
+#         file_url = fs.url(filename)  # Получение URL к файлу
+#
+#         return JsonResponse({"location": file_url})
+#
+#     return JsonResponse({"error": "Upload failed"}, status=400)
+@csrf_exempt
+def upload_image(request):
+    if request.method == "POST" and request.FILES.get("file"):
+        file = request.FILES["file"]
+
+        # Сохранение изображения
+        fs = FileSystemStorage()
+        filename = fs.save(file.name, file)  # Сохранение файла в MEDIA_ROOT
+        file_url = fs.url(filename)  # Получение URL к файлу
+
+        # Создание абсолютного URL
+        absolute_url = request.build_absolute_uri(file_url)
+
+        # return JsonResponse({"location": file_url})
+        return JsonResponse({"location": absolute_url})
+
+    return JsonResponse({"error": "Upload failed"}, status=400)

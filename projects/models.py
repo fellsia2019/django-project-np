@@ -1,9 +1,19 @@
 import os
 
-from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image as PilImage
+from tinymce.models import HTMLField
+
+from djangoNp import settings
+import re
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+
+
+def is_absolute_url(url):
+    parsed_url = urlparse(url)
+    return bool(parsed_url.scheme) and bool(parsed_url.netloc)
 
 
 class ImageOptimizationMixin:
@@ -61,7 +71,7 @@ class ImageOptimizationMixin:
 class Project(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
-    detail_text = RichTextUploadingField(blank=True)
+    detail_text = HTMLField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
@@ -79,7 +89,31 @@ class Project(models.Model, ImageOptimizationMixin):
     def save(self, *args, **kwargs):
         # оптимизация изображения, метод из ImageOptimizationMixin
         self.optimize_image(*args, **kwargs)
+
+        # Заменяем относительные URL на абсолютные перед сохранением
+        if self.detail_text:
+            self.detail_text = self.convert_relative_to_absolute(
+                self.detail_text
+            )
+
         super().save(*args, **kwargs)
+
+    def convert_relative_to_absolute(self, html_content):
+        # Базовый URL для формирования абсолютных ссылок
+        base_url = f"{settings.SITE_URL}"
+
+        # Используем BeautifulSoup для разбора HTML содержимого
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # Обновляем атрибуты src и data-mce-src
+        for img in soup.find_all("img"):
+            if img.has_attr("src") and not is_absolute_url(img["src"]):
+                relative_src = img["src"]
+
+                img["src"] = f"{base_url}/{relative_src.lstrip('../')}"
+
+        # Возвращаем обновленное содержимое
+        return str(soup)
 
 
 class Initiative(models.Model, ImageOptimizationMixin):

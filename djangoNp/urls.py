@@ -19,6 +19,7 @@ from projects.views import (
     ProjectAPIDestroy,
     ProjectAPIList,
     ProjectAPIUpdate,
+    upload_image,
 )
 
 urlpatterns = [
@@ -46,7 +47,10 @@ urlpatterns = [
         "api/v1/token/verify/", TokenVerifyView.as_view(), name="token_verify"
     ),
     path("api/v1/user/", CurrentUserView.as_view(), name="current_user"),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
+    path("tinymce/", include("tinymce.urls")),
+    path(
+        "api/v1/upload/", upload_image, name="upload_image"
+    ),  # Подключаем URL вашего приложения
 ]
 
 
