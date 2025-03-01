@@ -19,6 +19,7 @@ from projects.views import (
     ProjectAPIDestroy,
     ProjectAPIList,
     ProjectAPIUpdate,
+    RegisterView,
     upload_image,
 )
 
@@ -47,6 +48,7 @@ urlpatterns = [
         "api/v1/token/verify/", TokenVerifyView.as_view(), name="token_verify"
     ),
     path("api/v1/user/", CurrentUserView.as_view(), name="current_user"),
+    path("api/v1/register/", RegisterView.as_view(), name="register"),
     path("tinymce/", include("tinymce.urls")),
     path(
         "api/v1/upload/", upload_image, name="upload_image"

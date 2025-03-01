@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -7,6 +7,7 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Article, Initiative, Project
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
@@ -14,6 +15,7 @@ from .serializers import (
     ArticleSerializer,
     InitiativeSerializer,
     ProjectSerializer,
+    RegisterSerializer,
     UserSerializer,
 )
 from django.http import JsonResponse
@@ -95,6 +97,30 @@ class CurrentUserView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+            # Генерируем JWT токены
+            refresh = RefreshToken.for_user(user)
+
+            return Response(
+                {
+                    "message": "Пользователь успешно зарегистрирован",
+                    "user": UserSerializer(
+                        user
+                    ).data,  # Возвращаем данные пользователя
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # @csrf_exempt
