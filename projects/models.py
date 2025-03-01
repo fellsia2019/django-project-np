@@ -18,37 +18,43 @@ def is_absolute_url(url):
 
 class ImageOptimizationMixin:
     def optimize_image(self, *args, **kwargs):
-        if self.image:
-            self.compress_image()
-            self.create_webp_image()
-        else:
-            # Если изображение очищено, также очищаем image_webp
-            self.image_webp = None
+        # Получаем список полей с изображениями (по умолчанию это 'image')
+        image_fields = getattr(self, "image_fields", ["image"])
 
-        # super().save(*args, **kwargs)
+        for field in image_fields:
+            image = getattr(self, field, None)
+            if image:
+                # Оптимизация и создание WebP для каждого изображения
+                self.compress_image(field)
+                self.create_webp_image(field)
+            else:
+                # Если изображения нет, очищаем соответствующее поле _webp
+                setattr(self, f"{field}_webp", None)
 
-    def compress_image(self):
-        # Открываем оптимизированное оригинальное изображение
-        image = PilImage.open(self.image)
-        image_name = os.path.basename(self.image.path)
+    def compress_image(self, field):
+        # Получаем изображение для текущего поля
+        image = getattr(self, field)
+        image_name = os.path.basename(image.path)
         image_path = os.path.join("media/images/", image_name)
 
         # Создаем директорию, если она не существует
         os.makedirs(os.path.dirname(image_path), exist_ok=True)
 
-        # Конвертируем изображение в RGB, если оно имеет альфа-канал
-        if image.mode == "RGBA":
-            image = image.convert("RGB")
+        # Открываем изображение с помощью PIL и конвертируем в RGB, если нужно
+        pil_image = PilImage.open(image)
+        if pil_image.mode == "RGBA":
+            pil_image = pil_image.convert("RGB")
 
-        # Сохраняем изображение с quality=80 и оптимизацией
-        image.save(image_path, format="JPEG", quality=80, optimize=True)
+        # Сохраняем изображение в JPEG формате с оптимизацией
+        pil_image.save(image_path, format="JPEG", quality=80, optimize=True)
 
-        # Сохраняем путь к новому файлу в поле image_webp
-        self.image = image_path.replace("media/", "")  # Обновляем поле image
+        # Обновляем путь в поле изображения
+        setattr(self, field, image_path.replace("media/", ""))
 
-    def create_webp_image(self):
-        # Определяем путь для WebP изображения
-        image_name = os.path.basename(self.image.path)
+    def create_webp_image(self, field):
+        # Формируем путь для изображения в формате WebP
+        image = getattr(self, field)
+        image_name = os.path.basename(image.path)
         webp_image_name = os.path.splitext(image_name)[0] + ".webp"
         webp_image_path = os.path.join("media/images/", webp_image_name)
         original_image_path = os.path.join("media/images/", image_name)
@@ -56,16 +62,14 @@ class ImageOptimizationMixin:
         # Создаем директорию, если она не существует
         os.makedirs(os.path.dirname(webp_image_path), exist_ok=True)
 
-        # Открываем изображение для создания WebP версии
-        image = PilImage.open(original_image_path)
+        # Открываем изображение для конвертации в WebP
+        pil_image = PilImage.open(original_image_path)
 
-        # Сохраняем изображение в формате WebP
-        image.save(webp_image_path, format="webp", quality=80)
+        # Сохраняем изображение в WebP формате
+        pil_image.save(webp_image_path, format="webp", quality=80)
 
-        # Сохраняем путь к новому файлу в поле image_webp
-        self.image_webp = webp_image_path.replace(
-            "media/", ""
-        )  # Обновляем поле image_webp
+        # Обновляем путь к WebP изображению
+        setattr(self, f"{field}_webp", webp_image_path.replace("media/", ""))
 
 
 class Project(models.Model, ImageOptimizationMixin):
@@ -78,6 +82,11 @@ class Project(models.Model, ImageOptimizationMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
     image_webp = models.ImageField(blank=True, null=True)
+    image_detail = models.ImageField(blank=True, null=True)
+    image_detail_webp = models.ImageField(blank=True, null=True)
+
+    # Указываем поля с изображениями, которые нужно обрабатывать
+    image_fields = ["image", "image_detail"]
 
     class Meta:
         verbose_name = "Проект"
