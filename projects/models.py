@@ -128,12 +128,15 @@ class Project(models.Model, ImageOptimizationMixin):
 class Initiative(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
+    detail_text = HTMLField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
     image_webp = models.ImageField(blank=True, null=True)
+    image_detail = models.ImageField(blank=True, null=True)
+    image_detail_webp = models.ImageField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Инициатива"
@@ -162,6 +165,7 @@ class ArticleCategory(models.Model):
 class Article(models.Model, ImageOptimizationMixin):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
+    detail_text = HTMLField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
@@ -169,6 +173,8 @@ class Article(models.Model, ImageOptimizationMixin):
     cat_id = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE)
     image = models.ImageField(blank=True, null=True)
     image_webp = models.ImageField(blank=True, null=True)
+    image_detail = models.ImageField(blank=True, null=True)
+    image_detail_webp = models.ImageField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # оптимизация изображения, метод из ImageOptimizationMixin
