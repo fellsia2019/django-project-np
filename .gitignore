@@ -24,7 +24,7 @@ build/
 #db.sqlite3 // пока оставлю
 
 # Media files
-/media
+#/media // пока оставлю
 
 # Static files
 /static
