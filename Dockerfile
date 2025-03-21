@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt --index-url https://pypi.org/
 # Копируем весь проект
 COPY . .
 
-# Собираем статические файлы
+RUN python manage.py makemigrations
 RUN python manage.py migrate
 
 # Собираем статические файлы
