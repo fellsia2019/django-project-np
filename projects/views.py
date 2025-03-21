@@ -1,3 +1,6 @@
+from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (
@@ -18,11 +21,6 @@ from .serializers import (
     RegisterSerializer,
     UserSerializer,
 )
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import FileSystemStorage
-from PIL import Image
-import io
 
 
 class CustomPagination(PageNumberPagination):

@@ -1,6 +1,5 @@
 # Pet project
 
-Названия нет, описания тоже)  
 Это обычный пет проект для обретения дополнительного опыта и общупывание всякого и разного  
 Фронт для этого проекта - https://github.com/fellsia2019/nuxt3-project-np  
 
@@ -11,8 +10,7 @@
 
 ### Требования
 
-- Python 3.9x
-- Django 5.x или выше
+- установленный docker
 
 
 ### Клонирование репозитория
@@ -23,39 +21,16 @@
 git clone git@github.com:fellsia2019/django-project-np.git
 ```
 
-### Установка зависимостей
+### Установка и запуск
 
-Рекомендуется создать виртуальное окружение:
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Для Unix или MacOS
-venv\Scripts\activate     # Для Windows
-```
-
-Установите необходимые библиотеки:
+Приложение запаковано в докер, поэтому Вам нужно лишь установить докер на ваше устройство и выполнить команду билда
 
 ```bash
-pip install -r requirements.txt
+docker-compose up --build
 ```
 
-### Настройка базы данных
-
-1. Создайте базу данных и пользователя (например, PostgreSQL, SQLite и т.д.).
-2. Настройте подключение к базе данных в `settings.py` вашего проекта.
-3. Примените миграции:
-
-```bash
-python manage.py migrate
-```
-
-### Запуск сервера
-
-Запустите локальный сервер:
-
-```bash
-python manage.py runserver
-```
+После чего приложение будет доступно в браузере   
+[localhost:8000/](http:localhost:8000/)
 
 ### Код стайл и форматирование
 В проекте установлены 3 библиотеки для форматирования и код стайла  
@@ -65,17 +40,9 @@ python manage.py runserver
 
 Перед запуском этих команд убедитесь что вы находитесь в корне проекта!
 ```bash
-black .  
-isort .  
-flake8 .  
+docker-compose exec web black .  
+docker-compose exec web isort .  
+docker-compose exec web flake8 .  
 ``` 
 
-Теперь вы можете открыть [http://127.0.0.1:8000](http://127.0.0.1:8000) в вашем браузере.
 
-## Тестирование
-
-Инструкции по запуску тестов:
-
-```bash
-python manage.py test
-```

@@ -219,7 +219,8 @@ TINYMCE_DEFAULT_CONFIG = {
         "searchreplace",
         "visualchars",
     ),
-    "toolbar": "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | table | code",
+    "toolbar": "undo redo | styleselect | bold italic \
+    | alignleft aligncenter alignright | bullist numlist outdent indent | link image | table | code",
     "image_caption": True,
     "images_upload_url": "/api/v1/upload/",  # URL для загрузки изображений
     "images_upload_handler": "projects.views.upload_image",  # Обработчик загрузки изображений

@@ -1,14 +1,13 @@
 import os
+from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image as PilImage
 from tinymce.models import HTMLField
 
 from djangoNp import settings
-import re
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
 
 
 def is_absolute_url(url):
