@@ -26,7 +26,8 @@ git clone git@github.com:fellsia2019/django-project-np.git
 Приложение запаковано в докер, поэтому Вам нужно лишь установить докер на ваше устройство и выполнить команду билда
 
 ```bash
-docker-compose up --build
+docker-compose up --build // windows macos
+sudo docker-compose up --build // linux
 ```
 
 После чего приложение будет доступно в браузере   
