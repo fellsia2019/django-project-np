@@ -43,9 +43,9 @@ docker compose up --build
 
 Перед запуском этих команд убедитесь что вы находитесь в корне проекта!
 ```bash
-docker-compose exec web black .  
-docker-compose exec web isort .  
-docker-compose exec web flake8 .  
+docker compose exec web black .  
+docker compose exec web isort .  
+docker compose exec web flake8 .  
 ``` 
 
 
