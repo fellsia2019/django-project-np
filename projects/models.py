@@ -139,6 +139,9 @@ class Initiative(models.Model, ImageOptimizationMixin):
     image_detail_webp = models.ImageField(blank=True, null=True)
     json_blocks = models.JSONField(blank=True, null=True)
 
+    # Указываем поля с изображениями, которые нужно обрабатывать
+    image_fields = ["image", "image_detail"]
+
     class Meta:
         verbose_name = "Инициатива"
         verbose_name_plural = "Инициатива"
@@ -177,6 +180,9 @@ class Article(models.Model, ImageOptimizationMixin):
     image_detail = models.ImageField(blank=True, null=True)
     image_detail_webp = models.ImageField(blank=True, null=True)
     json_blocks = models.JSONField(blank=True, null=True)
+
+    # Указываем поля с изображениями, которые нужно обрабатывать
+    image_fields = ["image", "image_detail"]
 
     def save(self, *args, **kwargs):
         # оптимизация изображения, метод из ImageOptimizationMixin
