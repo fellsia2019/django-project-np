@@ -1,27 +1,31 @@
+from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import Article, Initiative, Project
-from bs4 import BeautifulSoup
 
 
 class HTMLTableWrapperMixin:
     def wrap_tables_in_html(self, html_content):
         if not html_content:
             return html_content
-            
-        soup = BeautifulSoup(html_content, 'html.parser')
-        tables = soup.find_all('table')
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        tables = soup.find_all("table")
 
         for table in tables:
-            if table.parent and table.parent.name == 'div' and 'custom-table-wrapper' in table.parent.get('class', []):
+            if (
+                table.parent
+                and table.parent.name == "div"
+                and "custom-table-wrapper" in table.parent.get("class", [])
+            ):
                 continue
-                
-            wrapper = soup.new_tag('div', **{'class': 'custom-table-wrapper'})
+
+            wrapper = soup.new_tag("div", **{"class": "custom-table-wrapper"})
             table.wrap(wrapper)
-            
+
         return str(soup)
-    
+
 
 class ProjectSerializer(HTMLTableWrapperMixin, serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -37,8 +41,10 @@ class ProjectSerializer(HTMLTableWrapperMixin, serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if 'detail_text' in representation:
-            representation['detail_text'] = self.wrap_tables_in_html(representation['detail_text'])
+        if "detail_text" in representation:
+            representation["detail_text"] = self.wrap_tables_in_html(
+                representation["detail_text"]
+            )
         return representation
 
     @staticmethod

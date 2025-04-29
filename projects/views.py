@@ -1,6 +1,8 @@
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django_filters import BaseInFilter, FilterSet, NumberFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (
@@ -21,8 +23,6 @@ from .serializers import (
     RegisterSerializer,
     UserSerializer,
 )
-from django_filters.rest_framework import DjangoFilterBackend
-from django_filters import FilterSet, BaseInFilter, NumberFilter
 
 
 class CustomPagination(PageNumberPagination):
@@ -62,15 +62,17 @@ def create_filterset(model_class):
 
     class CustomFilter(FilterSet):
         # Фильтр для id__in (обычный)
-        id__in = BaseInFilter(field_name='id', lookup_expr='in')
+        id__in = BaseInFilter(field_name="id", lookup_expr="in")
 
         # Фильтр для id__exclude (исключающий)
-        id__exclude = BaseInFilter(field_name='id', exclude=True, lookup_expr='in')
+        id__exclude = BaseInFilter(
+            field_name="id", exclude=True, lookup_expr="in"
+        )
 
         class Meta:
             model = model_class
             fields = {
-                'id': ['exact'],  # Поддержка ?id=42
+                "id": ["exact"],  # Поддержка ?id=42
             }
 
     return CustomFilter
@@ -78,7 +80,9 @@ def create_filterset(model_class):
 
 def create_views(model_class, serializer_model_class):
     class ListCreateView(generics.ListCreateAPIView):
-        queryset = model_class.objects.filter(is_published=True).order_by("time_create")
+        queryset = model_class.objects.filter(is_published=True).order_by(
+            "time_create"
+        )
         serializer_class = serializer_model_class
         permission_classes = (IsAuthenticatedOrReadOnly,)
         pagination_class = CustomPagination
@@ -145,7 +149,6 @@ class RegisterView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @csrf_exempt
