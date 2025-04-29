@@ -131,7 +131,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-SITE_URL = "http://127.0.0.1:8000"
+SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
