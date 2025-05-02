@@ -36,6 +36,8 @@ jobs:
             EOF
             chmod 600 .env
 
+            cat .env
+
             # Первый запуск
             if [ ! -f db/prod.sqlite3 ]; then
               docker compose run web python manage.py migrate
