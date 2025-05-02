@@ -21,14 +21,14 @@ build/
 # Django stuff:
 *.log
 *.sqlite3
-#db.sqlite3 // пока оставлю
+#db.sqlite3ю
 
 # Media files
-#/media // пока оставлю
+#/media
 
 # Static files
 /static
-/staticfiles
+#/staticfiles
 
 # IDE Files
 .idea/
