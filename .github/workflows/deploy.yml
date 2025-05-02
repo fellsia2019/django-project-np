@@ -34,6 +34,7 @@ jobs:
             cat << EOF > .env
             DOCKER_USER=${{ secrets.DOCKER_USER }}
             SECURE=True
+            DEBUG=${{ secrets.DJANGO_DEBUG }}
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             SITE_URL=${{ secrets.DJANGO_SITE_URL }}
             ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
