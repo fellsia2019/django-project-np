@@ -32,6 +32,7 @@ jobs:
             
             # Создаем .env
             cat << EOF > .env
+            DOCKER_USER=${{ secrets.DOCKER_USER }}
             SECURE=True
             SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             SITE_URL=${{ secrets.DJANGO_SITE_URL }}
