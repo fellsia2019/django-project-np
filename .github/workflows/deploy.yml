@@ -1,0 +1,52 @@
+name: Deploy Django
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push
+        working-directory: ./backend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USER }}/django-prod:latest .
+          docker push ${{ secrets.DOCKER_USER }}/django-prod:latest
+
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /var/www/ar69tem/data/www/deep-cosmo.ru/opt/django-app
+            
+            # Создаем .env (если его нет)
+            if [ ! -f .env ]; then
+              cat << EOF > .env
+              SECURE=True
+              SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+              SITE_URL=${{ secrets.DJANGO_SITE_URL }}
+              ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
+              CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }}
+              DB_ENGINE=django.db.backends.sqlite3
+              DB_NAME=/app/db/prod.sqlite3
+              EOF
+              chmod 600 .env
+            fi
+
+            # Первый запуск
+            if [ ! -f db/prod.sqlite3 ]; then
+              docker compose run web python manage.py migrate
+            fi
+
+            # Обновление
+            docker compose pull
+            docker compose down
+            docker compose up -d
