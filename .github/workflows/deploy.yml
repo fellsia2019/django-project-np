@@ -12,7 +12,7 @@ jobs:
 
       - name: Build and push
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/django-prod:latest .
+          docker build --build-arg DJANGO_ENV=production -t ${{ secrets.DOCKER_USER }}/django-prod:latest .
           docker push ${{ secrets.DOCKER_USER }}/django-prod:latest
 
       - name: SSH Deploy
@@ -35,8 +35,6 @@ jobs:
             DB_NAME=/app/db/prod.sqlite3
             EOF
             chmod 600 .env
-
-            cat .env
 
             # Первый запуск
             if [ ! -f db/prod.sqlite3 ]; then

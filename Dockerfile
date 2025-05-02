@@ -7,20 +7,18 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
-
-# Копируем файл с зависимостями
 COPY requirements.txt .
 
-# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt --index-url https://pypi.org/simple
 
-# Копируем весь проект
 COPY . .
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+# (используем только для разработки)
+RUN if [ "$DJANGO_ENV" = "development" ]; then \
+      python manage.py makemigrations && \
+      python manage.py migrate; \
+    fi
 
 # Собираем статические файлы
 RUN python manage.py collectstatic --noinput
